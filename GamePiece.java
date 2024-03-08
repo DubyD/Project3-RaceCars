@@ -1,8 +1,7 @@
-public class Gamepiece{
-
+public class GamePiece {
     //Every gamepiece has coordinates
-    private int x;
-    private int y;
+    protected int x;
+    protected int y;
 
     //Every GamePiece has collidable
     private boolean solid;
@@ -25,6 +24,7 @@ public class Gamepiece{
         this.solid = false;
     }
 
+    //--------Getters----------------------------------------------------
     //Returns X coordinates
     public int getX(){
         return this.x;
@@ -39,14 +39,19 @@ public class Gamepiece{
         return this.solid;
     }
 
+    //--------Setters----------------------------------------------------
+    public void setSolid(boolean solid){
+        this.solid = solid;
+    }
+
     //Setting the String
     public void setDisplay(String display){
         this.display = display;
     }
+
     //returning the animation
     @Override
     public String toString(){
         return this.display;
     }
-
 }

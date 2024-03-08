@@ -1,6 +1,8 @@
-public class Destination extends wall {
+public class Destination extends GamePiece{
 
     private String token;
+
+
     public Destination(int x, int y, String display){
 
         //Setting up baseclass coordinates,

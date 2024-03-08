@@ -69,7 +69,7 @@ public class MenuGui {
         ObservableList<String> options = FXCollections.observableArrayList();
 
         //PuzzleReader static method to retrieve all sizes from .csv file
-        ArrayList<String> puzzleSizes = PuzzleReader.getAllSizes();
+        ArrayList<String> puzzleSizes = ;
 
         //Loops through the List until it is empty
         //Sizes are number of matching catagories x items in catagories
