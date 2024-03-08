@@ -19,8 +19,4 @@ public class Destination extends GamePiece{
         return this.token;
     }
 
-    public
-
-
-
 }

@@ -14,9 +14,9 @@ public class Steering {
 
 
         //Sets the Gui display of the car based on direction
-    public void setDisplay(int speed){
-            //if the car is motionless
-        if(speed == 0){
+    private void setDisplay(){
+            //If the car isn't moving
+        if(this.direction = ' '){
             this.display = "|" + this.carNum + "|";
 
             //if the car is moving
@@ -33,6 +33,9 @@ public class Steering {
 
         //alters the Cars toString()
     public String getDisplay(){
+        return this.display;
+    }
+    public char getDirection(){
         return this.direction;
     }
 
@@ -44,7 +47,38 @@ public class Steering {
         return false;
     }
 
+        //Used to stop the Car
+    public void setStop(){
+        this.direction = ' ';
+        this.setDisplay();
+    }
+
+        //Used to set moving direction
+    public void setDirection(int current, int goal, String xy){
+            //East South directionals
+        if((current - goal) > 0){
+            if(xy.equals("X")){
+                this.direction = 'E';
+                this.setDisplay();
+            }else{
+                this.direction = 'S'
+            }
+            //West North directionals
+        }else{
+            if(xy.equals("X")){
+                this.direction = 'W';
+            }else{
+                this.direction = 'N'
+            }
+        }
+        this.setDisplay();
+    }
+
+    public void leftTurn(){
+
+    }
         //Checks to see if the car needs to turn true = noTurns false = needs to turn;
+        //Used from after it reaches a Destination or getting around obstacles
     public boolean noTurns(int current, int goal, String xy){
 
         boolean reply;

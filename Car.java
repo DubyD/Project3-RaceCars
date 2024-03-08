@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Car extends GamePiece{
 
@@ -10,7 +9,9 @@ public class Car extends GamePiece{
     private Engine motor;
     private Steering wheel;
     private List<String> passport;
-    private boolean finished
+    private boolean finished;
+    private boolean collided;
+    private char workAround;
 
 
     public Car(int x, int y, String display){
@@ -24,6 +25,7 @@ public class Car extends GamePiece{
         this.map = new ArrayList<Destination>();
         this.passport = new ArrayList<String>();
         this.finished = false;
+        this.collided = false;
 
             //complex parts
         this.motor = new Engine();
@@ -41,12 +43,14 @@ public class Car extends GamePiece{
         this.wheel = null;
     }
 
-        //Used to match tokens
+        //Used to stamp passport with destinations
     private void getNextDestination(){
         this.passport.add(this.map.get(0).getToken());
         this.map.remove(0);
-        if(this.map.size() == 0){
 
+            //Once the passport is completely stamped the next turn will end this cars race
+        if(this.map.size() == 0){
+            this.finished = true;
         }
     }
 
@@ -73,13 +77,38 @@ public class Car extends GamePiece{
         this.prevSpot = past;
     }
 
+        //Crash course
+    public void setCollided(){
+        this.collided = true;
+        this.motor.stop();
+        char whichAxis = this.wheel.getDirection();
+
+        if(whichAxis == 'E' || whichAxis == 'W'){
+            this.workAround = 'X';
+        }else{
+            this.workAround = 'Y';
+        }
+
+    }
+
+        //exports the complex pieces of a Car
+    public Engine getMotor(){
+        return this.motor;
+    }
+
+    public Steering getWheel(){
+        return this.wheel;
+    }
 
     //-----------Exotic Methods--------------------------------
 
-        //used if vehicle collides or needs to U-turn
 
-    public void movement(){
 
+        //used if vehicle initates movement
+    public void startingMovement(){
+
+        this.collided = false;
+        this.motor.setSpeed();
             //Where are we moving
         int goalX = this.map.get(0).getX();
         int goalY = this.map.get(0).getY();
@@ -87,10 +116,40 @@ public class Car extends GamePiece{
             //shortens the largest gap
         int xDiff = this.getX() - goalX;
         int yDiff = this.getY() - goalY;
+        
+            //For collisions with none destinations
+        if(this.workAround == 'X'){
+            xDiff = xDiff * 0;
+            this.workAround = ' ';
+        }
+        if(this.workAround == 'Y'){
+            yDiff = yDiff * 0;
+            this.workAround = ' ';
+        }
 
+            //If xDiff  > yDiff EW
+            //If yDiff => xDiff NS
+        if(Math.abs(xDiff) > Math.abs(yDiff)){
+                //Sets the direction from motionless
+                //+ or - 1 from the X axis
+            this.wheel.setDirection(this.getX(), goalX, "X");
+            this.setX(this.getX() + (xDiff / Math.abs(xDiff)));
 
+        }else{
+                //Sets the direction from motionless
+                //+ or - 1 from the Y axis
+            this.wheel.setDirection(this.getY(), goalY, "Y");
+            this.setY(this.getY() + (yDiff / Math.abs(yDiff)));
+
+        }
 
     }
 
+    public void keepMoving(){
+
+        this.motor.setSpeed();
+        char direction = this.wheel.getDisplay();
+
+    }
 
 }

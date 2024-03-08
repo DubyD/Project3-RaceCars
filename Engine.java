@@ -9,28 +9,24 @@ public class Engine {
     }
 
         //Speed Setters
-    public void setSpeed(boolean collision){
+    public void setSpeed(){
 
-        //stops the car if car collides
-        if(collision == true){
-            this.speed = 0;
-        }else{
             //If car is stopped speed up
-            if(this.speed == 0){
-                this.speed = 1;
+        if(this.speed == 0){
+            this.speed = 1;
 
-            }else if(this.speed == 1) {
+        }else if(this.speed == 1) {
 
-                //Car has a 20% to speed up
-                Random random = new Random();
-                int randomNumber = random.nextInt(10) + 1;
-                //Double Speed
-                if (randomNumber > 7) {
-                    this.speed = 2;
-                }
+            //Car has a 20% to speed up
+            Random random = new Random();
+            int randomNumber = random.nextInt(10) + 1;
+            //Double Speed
+            if (randomNumber > 7) {
+                this.speed = 2;
             }
         }
     }
+
 
         //emergency brakes speed setter
     public void stop(){

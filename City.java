@@ -19,6 +19,11 @@ public class City {
 
     }
 
+    public City(){
+
+    }
+
+        //Sets up borders of the game
     private void sheetRock(int dimension){
 
             //iterates through the size of the game board
