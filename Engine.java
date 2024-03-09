@@ -27,6 +27,13 @@ public class Engine {
         }
     }
 
+        //Slow down before you turn
+    public void turning(){
+        if(this.speed == 2){
+            this.speed = 1;
+        }
+    }
+
 
         //emergency brakes speed setter
     public void stop(){

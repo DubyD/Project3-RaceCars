@@ -10,7 +10,9 @@ public class Steering {
         this.carNum = carNum;
     }
 
-
+    public String getCarNum(){
+        return this.carNum;
+    }
 
 
         //Sets the Gui display of the car based on direction
@@ -39,58 +41,66 @@ public class Steering {
         return this.direction;
     }
 
-        //Basic deconstruction piece of NS or EW and determines if the car U-turns
-    private boolean directional(int one, int two){
-        if((one - two) > 0){
-            return true;
-        }
-        return false;
-    }
-
         //Used to stop the Car
     public void setStop(){
         this.direction = ' ';
         this.setDisplay();
     }
 
-        //Used to set moving direction
-    public void setDirection(int current, int goal, String xy){
-            //East South directionals
-        if((current - goal) > 0){
-            if(xy.equals("X")){
-                this.direction = 'E';
-                this.setDisplay();
-            }else{
-                this.direction = 'S'
-            }
-            //West North directionals
-        }else{
-            if(xy.equals("X")){
-                this.direction = 'W';
-            }else{
-                this.direction = 'N'
-            }
-        }
+        //Used to set starting movement
+    public void setDirection(char direction){
+        this.direction = direction;
         this.setDisplay();
     }
 
-    public void leftTurn(){
+        //Must turn around an object
+    public void turn(boolean leftTurn){
 
+                //Handles turning facing East
+        if(this.direction == 'E'){
+            if(leftTurn){
+                this.direction = 'N';
+            }else{
+                this.direction = 'S';
+            }
+                //Handles turning facing West
+        }else if(this.direction == 'W'){
+            if(leftTurn){
+                this.direction = 'S';
+            }else{
+                this.direction = 'N';
+            }
+                //Handles turning facing North
+        }else if(this.direction == 'N'){
+            if(leftTurn){
+                this.direction = 'W';
+            }else{
+                this.direction = 'E';
+            }
+                //Handles turning facing South
+        }else if(this.direction == 'S'){
+            if(leftTurn){
+                this.direction = 'E';
+            }else{
+                this.direction = 'W';
+            }
+        }
     }
+
         //Checks to see if the car needs to turn true = noTurns false = needs to turn;
         //Used from after it reaches a Destination or getting around obstacles
-    public boolean noTurns(int current, int goal, String xy){
+    /*public boolean noTurns(int direction, String xy){
 
         boolean reply;
             //early escape. if they are equal then it will return false
-        if(current == goal){
+        if(direction == 0){
             return false;
         }
 
             //if true the number is positive
             //'>' moving east or
             //'v' moving south
-        if(this.directional(current, goal) > 0){
+        if(direction > 0){
 
             if(xy.equals("X")){
                     //if it's X
@@ -136,7 +146,7 @@ public class Steering {
 
         }
         return reply;
-    }
+    }*/
 
         //toString to complete the class
     @Override
