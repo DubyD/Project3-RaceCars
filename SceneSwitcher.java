@@ -37,7 +37,7 @@ public class SceneSwitcher {
     }
 
     private void showGame(String puzzleSize) {
-        Board gameBoard = new Board(puzzleSize);
+        GameScreen gameBoard = new GameScreen(puzzleSize);
 
         gameBoard.getEndButton().addActionListener(new ActionListener() {
             @Override
@@ -56,9 +56,9 @@ public class SceneSwitcher {
             }
         });
 
-        gamePanel = new JPanel();
-        gamePanel.setLayout(new BorderLayout());
-        gamePanel.add(gameBoard.getBoard(), BorderLayout.CENTER);
+        this.gamePanel = new JPanel();
+        this.gamePanel.setLayout(new BorderLayout());
+        this.gamePanel.add(gameBoard.getBoard(), BorderLayout.CENTER);
 
         this.frame.setContentPane(gamePanel);
         this.frame.revalidate();

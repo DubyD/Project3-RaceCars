@@ -1,109 +1,83 @@
 //Author WD
-
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
-import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MenuGui {
+public class MenuGui extends JFrame {
+    private JPanel menuOption;
+    private JLabel instructions;
+    private JPanel linedUp;
+    private JLabel replay;
+    private JButton startButton;
+    private JComboBox<String> sizeSelection;
 
-    // Scene to export
-    private VBox menuOption;
-
-    // Instructions for User
-    private Label instructions;
-
-    // Middle child holding the next 2 variables
-    private HBox linedUp;
-    private Label replay;
-
-    // The Grand Children
-    private Button startButton;
-    private ComboBox puzzleSelection;
-
-    public MenuGui(){
+    public MenuGui() {
+        setTitle("Menu GUI");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
         // Setting up the scene to be exported
-        this.menuOption = new VBox();
-        this.menuOption.setAlignment(Pos.CENTER);
+        this.menuOption = new JPanel();
+        this.menuOption.setLayout(new BoxLayout(menuOption, BoxLayout.Y_AXIS));
+        this.menuOption.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Instructions for starting the game
-        this.instructions = new Label("Select a Puzzle size, then press 'Start Puzzle'!\n"+
-                "Match the people to their attributes, then press 'check answers'\n");
+        this.instructions = new JLabel("Select a Game Size. your number will be converted"+
+                                       "into a square. ex(4 = 4x4)");
+        this.instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Setting up the Child to add to the Scene export
-        this.linedUp = new HBox( 10);
-        this.linedUp.setAlignment(Pos.CENTER);
+        this.linedUp = new JPanel();
+        this.linedUp.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
 
         // Grandchildren
-        this.startButton = new Button("Start Puzzle");
+        this.startButton = new JButton("Start Your Engines");
 
         // Sets up options
-        this.puzzleSelection = new ComboBox<String>();
-        this.dropBoxOptions();
-        //If user Won this Label Appears
-        this.replay = new Label();
+        this.sizeSelection = new JComboBox<>();
+        dropBoxOptions();
 
-        //adding Grandchildren
-        this.linedUp.getChildren().add(this.puzzleSelection);
-        this.linedUp.getChildren().add(this.startButton);
+        // If user Won this Label Appears
+        this.replay = new JLabel();
+        this.replay.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        //adding middle children
-        this.menuOption.getChildren().add(this.instructions);
-        this.menuOption.getChildren().add(this.linedUp);
-        this.menuOption.getChildren().add(this.replay);
+        // Adding Grandchildren
+        this.linedUp.add(sizeSelection);
+        this.linedUp.add(startButton);
 
+        // Adding middle children
+        this.menuOption.add(instructions);
+        this.menuOption.add(linedUp);
+        this.menuOption.add(replay);
+
+        add(this.menuOption, BorderLayout.CENTER);
+        pack();
+        setLocationRelativeTo(null);
     }
 
-    private void dropBoxOptions(){
+    private void dropBoxOptions() {
+        // Setting up the DropBox options
 
-        //Setting up the DropBox options
-        ObservableList<String> options = FXCollections.observableArrayList();
-
-        //PuzzleReader static method to retrieve all sizes from .csv file
-        ArrayList<String> puzzleSizes = ;
-
-        //Loops through the List until it is empty
-        //Sizes are number of matching catagories x items in catagories
-        while(puzzleSizes.isEmpty() == false){
-            String x = puzzleSizes.get(0);
-            options.add(x);
-            puzzleSizes.remove(x);
+        for(int i = 9; i  > 3; i --){
+            String x = String.valueOf(i);
+            this.sizeSelection.addItem(x);
         }
-        this.puzzleSelection.setItems(options);
     }
 
-    //I know Casting is gross but it wouldn't let me compile without it
-    public String getSelectedItem(){
-        return (String) this.puzzleSelection.getValue();
+    public String getSelectedItem() {
+        return (String) sizeSelection.getSelectedItem();
     }
 
-    //Sends a Button Pointer to apply a Lambda function to the Menu's button
-    public Button getStartButton(){
-        return this.startButton;
+    public JButton getStartButton() {
+        return startButton;
     }
 
-    //Sends the Menu Gui to be added to the Stage
-    public VBox getMenu(){
-        return this.menuOption;
-    }
-
-    public Label getReplay(){
-        return this.replay;
+    public JLabel getReplay() {
+        return replay;
     }
 
     @Override
-    public String toString(){
-        String reply = "This is a Main Menu for the Game";
-        return reply;
+    public String toString() {
+        return "This is a Main Menu for the Game";
     }
-
 }

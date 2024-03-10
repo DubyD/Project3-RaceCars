@@ -9,7 +9,7 @@ public class Main {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             SceneSwitcher sceneSwitcher = new SceneSwitcher(frame);
-            sceneSwitcher.switchToMenuScene();
+            //sceneSwitcher.switchToMenuScene();
 
             frame.pack();
             frame.setLocationRelativeTo(null);
