@@ -227,6 +227,10 @@ public class City {
     public List<Car> getRacers(){
         return this.racers;
     }
+
+    public void setRacers(List<Car> nextSpots){
+        this.racers = nextSpots;
+    }
     public Timer getClock(){
         return this.clock;
     }

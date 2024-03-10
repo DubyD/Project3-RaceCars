@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,18 +25,20 @@ public class TurnTaker extends TimerTask {
         this.clock = null;
     }
 
-    public boolean getFinished(){
-        return this.finished;
-    }
+        //Used to optimize turning to the shortest path
+
+
+
 
     @Override
     public void run(){
 
         this.turns = this.turns + 1;
-            //Checks obstacles and
+            //moves cars and checks obstacles
         this.startGame();
         boolean gameOver = true;
 
+            //Checks to see if the race is over
         for(Car next : this.gotham.getRacers()){
             gameOver = gameOver && next.getFinished();
             if(gameOver = true){
@@ -47,46 +51,144 @@ public class TurnTaker extends TimerTask {
         }
     }
 
+    public boolean getFinished(){
+        return this.finished;
+    }
+
     public void startGame(){
+
+        List<Car> currentRacers = new ArrayList<Car>();
 
         for(Car next : this.gotham.getRacers()){
 
-            //Checks the speed of the vehicle. each vehicle
+
+
+                //Checks the speed of the vehicle. each vehicle
             if(next.getMotor().getSpeed() == 0){
 
-                //You need to set the speed before starting their journey
+                    //You need to set the speed before starting their journey
                 next.getMotor().setSpeed();
-                next.startMove();
+                Car check = next.startMove();
+
+
                 for(GamePiece wall : this.gotham.getObstacles()){
-                    if(wall.getX() == next.getX()){
-                        if(wall.getY() == next.getY()){
-                            //------------------------------------need to creating a turning method
-                            next = next.getPrevSpot();
+                    if(wall.getX() == check.getX()){
+                        if(wall.getY() == check.getY()){
+
+
+                            int diff;
+                            if(check.getWheel().getDirection() == 'N' || check.getWheel().getDirection() == 'S'){
+                                diff = next.getCurrentDestination().getX() - next.getX();
+                            }else{
+                                diff = next.getCurrentDestination().getY() - next.getY();
+                            }
+
+
+
+                            next.getMotor().turning();
+                            next.collison(this.leftTurn(check.getWheel().getDirection(), diff));
+                            check = next;
                         }
                     }
                 }
+
+                if(check.gotThere()){
+                    check.getMotor().stop();
+
+                }
+                currentRacers.add(check);
 
 
             }else{
 
-                //Gives an opprotunity to speed up
+                    //Gives an opprotunity to speed up
                 next.getMotor().setSpeed();
                 for(int i = 0; i < next.getMotor().getSpeed(); i++) {
-                    next.keepMove();
+                    Car check = next.keepMove();
+
+
                     for (GamePiece wall : this.gotham.getObstacles()) {
-                        if (wall.getX() == next.getX()) {
-                            if (wall.getY() == next.getY()) {
-                                //-------------------------------------need to create a turning method
-                                next = next.getPrevSpot();
+
+                            //if you work through the nested loops it
+                        if (wall.getX() == check.getX()) {
+                            if (wall.getY() == check.getY()) {
+
+                                    //slows the car down on collision
+                                i = i + 1;
+                                int diff;
+                                if(check.getWheel().getDirection() == 'N' || check.getWheel().getDirection() == 'S'){
+                                    diff = next.getCurrentDestination().getX() - next.getX();
+                                }else{
+                                    diff = next.getCurrentDestination().getY() - next.getY();
+                                }
+
+
+
+                                next.getMotor().turning();
+                                next.collison(this.leftTurn(check.getWheel().getDirection(), diff));
+                                check = next;
                             }
                         }
+
                     }
+
+                        //Checks if it hit the destination
+                    if(check.gotThere()){
+                        check.getMotor().stop();
+
+                    }
+                    currentRacers.add(check);
                 }
 
             }
+
+
+
         }
 
+        this.gotham.setRacers(currentRacers);
+
     }
+
+        //Used in StartGame for Optimized turning
+    private boolean leftTurn(char direction, int diff){
+        boolean leftTurn;
+        //Superior turning mechanism for each direction
+        if(direction == 'E'){
+            //Turns N or S
+            if(diff < 0){
+                leftTurn = true;
+            }else{
+                leftTurn = false;
+            }
+
+        }else if(direction == 'W') {
+            //Turn S or N
+            if(diff > 0){
+                leftTurn = true;
+            }else{
+                leftTurn = false;
+            }
+
+        }else if(direction == 'N'){
+            //Turns W or E
+            if(diff < 0){
+                leftTurn = true;
+            }else{
+                leftTurn = false;
+            }
+
+        }else if(direction == 'S'){
+            //Turns E or W
+            if(diff > 0){
+                leftTurn = true;
+            }else{
+                leftTurn = false;
+            }
+        }
+        return leftTurn;
+    }
+
 
 
 

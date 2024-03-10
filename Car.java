@@ -85,6 +85,7 @@ public class Car extends GamePiece{
         this.y = y;
     }
 
+
         //In case of collision saves old space
     public void setPrev(Car past){
         this.prevSpot = past;
@@ -94,6 +95,23 @@ public class Car extends GamePiece{
     public void setTurnCount(int turns){
         this.turns = turns;
     }
+
+        //Used to get around obstacles
+    public Destination getCurrentDestination(){
+        return this.map.get(0);
+    }
+
+    public boolean gotThere(){
+        if(this.map.get(0).getX() == this.getX()){
+            if(this.map.get(0).getY() == this.getY()){
+
+                this.getNextDestination();
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public boolean getFinished(){
         return this.finished;
@@ -109,10 +127,7 @@ public class Car extends GamePiece{
         return this.wheel;
     }
 
-        //used to determine collision by 'popping' off stack
-    public Car getPrevSpot(){
-        return this.prevSpot;
-    }
+
 
     //-----------Exotic Methods--------------------------------
 
@@ -121,9 +136,14 @@ public class Car extends GamePiece{
         //used if vehicle stops at a Destination and needs to initate movement
     public Car startMove(){
 
+            //Escapes the loop
+        if(this.finished){
+            return this;
+        }
+
         int nextX = this.getX();
         int nextY = this.getY();
-        String whichAxis;
+        char whichAxis;
 
             //Where are we moving
         int goalX = this.map.get(0).getX();
@@ -169,38 +189,39 @@ public class Car extends GamePiece{
         char direction = this.wheel.getDirection();
         int nextX = this.getX();
         int nextY = this.getY();
-        String whichAxis;
+        char whichAxis;
 
             //Adds new coordinates to next iteration of Car
         if(direction == 'E'){
             nextX = nextX + 1;
-            whichAxis = "X";
+            whichAxis = 'E';
         } else if(direction == 'W'){
             nextX = nextX - 1;
-            whichAxis = "X";
+            whichAxis = 'W';
         }else if(direction == 'N'){
             nextY = nextY - 1;
-            whichAxis = "Y";
+            whichAxis = 'N';
         }else if(direction == 'S'){
             nextY = nextY + 1;
-            whichAxis = "Y";
+            whichAxis = 'S';
         }
 
         Car next = new Car(nextX, nextY, this.wheel.getCarNum());
         next.setPrev(this);
-
+        next.getWheel().setDirection(whichAxis);2
             //Continues the direction and fixes the wheel if turning
         if(this.collided){
                 //Resets the direction if this car turned around an obstacle
             if(this.turnLeft){
                 //if it turned left it will redirect back right
-                next.wheel.turn(false);
+                next.getWheel().turn(false);
+
             }else{
                 //if it turned right it will redirect back left
-                next.wheel.turn(true);
+                next.getWheel().turn(true);
             }
         }
-        next.getWheel().setDirection(whichAxis);
+
         return next;
 
     }
@@ -223,7 +244,9 @@ public class Car extends GamePiece{
     //--Finishing the Race Methods---------------------------------------------------------
         //when finished going places
         //will print out Passport results
-    public String results(){
+
+    @Override
+    public String toString(){
         String reply = "You have collected Destinations: ";
         for(String next : this.passport){
             reply = reply + next + "\n";
