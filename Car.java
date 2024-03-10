@@ -245,14 +245,17 @@ public class Car extends GamePiece{
         //when finished going places
         //will print out Passport results
 
-    @Override
-    public String toString(){
+    public String results(){
         String reply = "You have collected Destinations: ";
         for(String next : this.passport){
             reply = reply + next + "\n";
         }
         reply = reply + " in " + this.turns + " amount of turns";
         return reply;
+    }
+
+    public String toString(){
+        return this.wheel.getDisplay();
     }
 
 }

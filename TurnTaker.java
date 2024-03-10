@@ -94,6 +94,7 @@ public class TurnTaker extends TimerTask {
 
                 if(check.gotThere()){
                     check.getMotor().stop();
+                    check.getWheel().setStop();
 
                 }
                 currentRacers.add(check);
@@ -135,6 +136,7 @@ public class TurnTaker extends TimerTask {
                         //Checks if it hit the destination
                     if(check.gotThere()){
                         check.getMotor().stop();
+                        check.getWheel().setStop();
 
                     }
                     currentRacers.add(check);

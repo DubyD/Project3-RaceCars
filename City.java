@@ -6,6 +6,8 @@ public class City {
     private Timer clock;
     private List<GamePiece> walls;
     private List<GamePiece> obstacles;
+
+    private List<GamePiece> board;
     private List<Destination> stops;
     private List<Car> racers;
 
@@ -29,6 +31,12 @@ public class City {
 
             //This sets the Clock to
         this.clock.scheduleAtFixedRate(this.pacer, 0, 3000);
+
+        this.board = new ArrayList<GamePiece>();
+        this.board.addAll(this.walls);
+        this.board.addAll(this.stops);
+        this.board.addAll(this.obstacles);
+
     }
 
     public City(){
@@ -236,6 +244,9 @@ public class City {
     }
     public List<GamePiece> getObstacles(){
         return this.obstacles;
+    }
+    public List<GamePiece> getBoard(){
+        return this.board;
     }
 
 
