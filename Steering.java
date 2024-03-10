@@ -1,3 +1,7 @@
+//Author WD
+
+
+    //Separates directionals and Gui display of the Car
 public class Steering {
 
     private char direction;
@@ -18,18 +22,18 @@ public class Steering {
         //Sets the Gui display of the car based on direction
     private void setDisplay(){
             //If the car isn't moving
-        if(this.direction = ' '){
+        if(this.direction == ' '){
             this.display = "|" + this.carNum + "|";
 
             //if the car is moving
         }else if(this.direction == 'E'){
-            this.display = this.carNum + ">"
+            this.display = this.carNum + ">";
         }else if(this.direction == 'W'){
             this.display = "<" + this.carNum;
         }else if(this.direction == 'N'){
             this.display = "^\n" + this.carNum;
         }else if(this.direction == 'S'){
-            this.display = this.carNum + "\nv"
+            this.display = this.carNum + "\nv";
         }
     }
 
@@ -87,66 +91,6 @@ public class Steering {
         }
     }
 
-        //Checks to see if the car needs to turn true = noTurns false = needs to turn;
-        //Used from after it reaches a Destination or getting around obstacles
-    /*public boolean noTurns(int direction, String xy){
-
-        boolean reply;
-            //early escape. if they are equal then it will return false
-        if(direction == 0){
-            return false;
-        }
-
-            //if true the number is positive
-            //'>' moving east or
-            //'v' moving south
-        if(direction > 0){
-
-            if(xy.equals("X")){
-                    //if it's X
-                if(this.direction == 'E'){
-                    reply = true;
-                }else if(this.direction == 'W'){
-                    reply = false;
-                }
-
-            }else{
-                    //if it's Y
-                if(this.direction == 'S'){
-                    reply = true;
-                }else if(this.direction == 'N'){
-                    reply = false;
-                }
-
-            }
-
-            //if false the number is negative
-            //'<' moving west or
-            //'^' moving north
-        }else{
-            if(this.directional(current, goal)){
-                if(xy.equals("X")) {
-                        //if it's X
-                    if (this.direction == 'E') {
-                        reply = false;
-                    } else if (this.direction == 'W') {
-                            //if they are equal it must turn either N or S
-                        reply = true;
-                    }
-
-                }else{
-                        //if it's Y
-                    if(this.direction == 'S'){
-                        reply = false;
-                    }else if(this.direction == 'N'){
-                        reply = true;
-                    }
-                }
-            }
-
-        }
-        return reply;
-    }*/
 
         //toString to complete the class
     @Override

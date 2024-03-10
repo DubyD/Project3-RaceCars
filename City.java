@@ -1,10 +1,13 @@
+//Author WD
+
+
 import java.util.*;
 
-
+    //Back end of all the game components
 public class City {
 
     private Timer clock;
-    private List<GamePiece> walls;
+
     private List<GamePiece> obstacles;
 
     private List<GamePiece> board;
@@ -13,62 +16,40 @@ public class City {
 
     private TurnTaker pacer;
 
-    public City(int dimension, int racers){
+    public City(int dimension, int racers, GameGrid gui){
 
         this.clock = new Timer();
             //Sets the boundaries
-        this.walls = new ArrayList<GamePiece>;
+
         this.racers = new ArrayList<Car>();
         this.stops = new ArrayList<Destination>();
         this.obstacles = new ArrayList<GamePiece>();
-        this.pacer = new TurnTaker(this);
+        this.pacer = new TurnTaker(this, gui);
 
             //Methods for initiating GamePieces
-        this.sheetRock(dimension);
         this.makeDestinations(dimension);
         this.addCompetitors(dimension, racers);
         this.addObstacles(dimension);
 
-            //This sets the Clock to
-        this.clock.scheduleAtFixedRate(this.pacer, 0, 3000);
 
         this.board = new ArrayList<GamePiece>();
-        this.board.addAll(this.walls);
         this.board.addAll(this.stops);
         this.board.addAll(this.obstacles);
+        this.board.addAll(this.racers);
+
+        //This sets the Clock to
+        this.clock.scheduleAtFixedRate(this.pacer, 0, 3000);
+
 
     }
 
     public City(){
         this.clock = null;
-        this.walls = null;
         this.stops = null;
         this.racers = null;
 
     }
 //----------------Factory Methods--------------------------------------------------
-        //Sets up borders of the game
-    private void sheetRock(int dimension){
-
-            //iterates through the size of the game board
-        for(int x = 0; x < dimension; x++){
-            for(int y = 0; y < dimension; y++){
-
-                    //Sets the top/bottom boundaries
-                if(x == 0 || x == dimension){
-                    GamePiece wall = new GamePiece(x,y);
-                    wall.setDisplay("*");
-                    this.walls.add(wall);
-
-                    //Sets the left/right boundaries
-                }else if(y == 0 || y == dimension){
-                    GamePiece wall = new GamePiece(x,y);
-                    wall.setDisplay("*");
-                    this.walls.add(wall);
-                }
-            }
-        }
-    }
         //Used to compare coordinates to an Object in following methods
     private boolean validSpot(int x, int y, GamePiece one){
         if(x == one.getX()){
@@ -146,13 +127,13 @@ public class City {
                         //Needed to change to true to compare true && true
                     freeSpace = true;
 
-                    for (Destination next : this.stops) {
+                    for (Destination stops : this.stops) {
 
                             //checks the spaces availability
                             //if true for all next's it will remain true
                             //if false for even 1 next it will stay false
                             //and reiterates through loop
-                        freeSpace = freeSpace && validSpot(randomX, randomY, next);
+                        freeSpace = freeSpace && validSpot(randomX, randomY, stops);
 
                     }
                         //Changes Variables to hopefully exit loop
@@ -197,22 +178,22 @@ public class City {
                     //Needed to change to true to compare true && true
                     freeSpace = true;
 
-                    for (Destination next : this.stops) {
+                    for (Destination stops : this.stops) {
 
                         //checks the spaces availability
                         //if true for all next's it will remain true
                         //if false for even 1 next it will stay false
                         //and reiterates through loop
-                        freeSpace = freeSpace && validSpot(randomX, randomY, next);
+                        freeSpace = freeSpace && validSpot(randomX, randomY, stops);
 
                     }
-                    for (Car next : this.racers) {
+                    for (Car players : this.racers) {
 
                         //checks the spaces availability
                         //if true for all next's it will remain true
                         //if false for even 1 next it will stay false
                         //and reiterates through loop
-                        freeSpace = freeSpace && validSpot(randomX, randomY, next);
+                        freeSpace = freeSpace && validSpot(randomX, randomY, players);
                     }
 
                     //Changes Variables to hopefully exit loop
@@ -232,6 +213,10 @@ public class City {
 
     //-------------Getters--------------------------------------------------
 
+    public boolean getFinished(){
+        return this.pacer.getFinished();
+    }
+
     public List<Car> getRacers(){
         return this.racers;
     }
@@ -239,14 +224,41 @@ public class City {
     public void setRacers(List<Car> nextSpots){
         this.racers = nextSpots;
     }
+
     public Timer getClock(){
         return this.clock;
     }
+
     public List<GamePiece> getObstacles(){
         return this.obstacles;
     }
+
     public List<GamePiece> getBoard(){
         return this.board;
+    }
+
+        //String of The Race results
+    public String getResults(){
+        String reply = "";
+        int turns = 0;
+        Car winner = new Car();
+
+        for(Car next : this.racers){
+            if(turns == 0){
+                winner = next;
+            }else{
+                if(next.getTurns() < winner.getTurns()){
+                    winner = next;
+                }
+            }
+        }
+        reply = winner.getWheel().getCarNum() + " won the race!\n"+
+                "The results are:\n\n";
+
+        for(Car next : this.racers){
+            reply = reply + next.results() + "\n";
+        }
+        return reply;
     }
 
 

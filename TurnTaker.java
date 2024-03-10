@@ -1,20 +1,26 @@
+//Author WD
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+    //Separates the Timer Task to tidy up the city class
 public class TurnTaker extends TimerTask {
 
     private City gotham;
     private boolean finished;
     private int turns;
     private Timer clock;
+    private GameGrid guiUpdater;
 
-    public TurnTaker(City gotham){
+    public TurnTaker(City gotham, GameGrid guiUpdater){
         this.gotham = gotham;
         this.finished = false;
         this.turns = 0;
         this.clock = gotham.getClock();
+        this.guiUpdater = guiUpdater;
     }
 
         //Second constructor to complete class
@@ -23,6 +29,7 @@ public class TurnTaker extends TimerTask {
         this.finished = false;
         this.turns = -1;
         this.clock = null;
+        this.guiUpdater = null;
     }
 
         //Used to optimize turning to the shortest path
@@ -46,9 +53,11 @@ public class TurnTaker extends TimerTask {
             }
         }
         this.finished = gameOver;
-        if(this.finished()){
+        if(this.finished){
             this.clock.cancel();
         }
+            //Updates Gui
+        this.guiUpdater.updateLabels();
     }
 
     public boolean getFinished(){
@@ -61,6 +70,10 @@ public class TurnTaker extends TimerTask {
 
         for(Car next : this.gotham.getRacers()){
 
+                //Skips any finished racers
+            if(next.getFinished()){
+                continue;
+            }
 
 
                 //Checks the speed of the vehicle. each vehicle
@@ -154,7 +167,7 @@ public class TurnTaker extends TimerTask {
 
         //Used in StartGame for Optimized turning
     private boolean leftTurn(char direction, int diff){
-        boolean leftTurn;
+        boolean leftTurn = false;
         //Superior turning mechanism for each direction
         if(direction == 'E'){
             //Turns N or S

@@ -1,6 +1,9 @@
+//Author WD
+
 import java.util.ArrayList;
 import java.util.List;
 
+    //Makes a moveable piece on the board
 public class Car extends GamePiece{
 
 
@@ -51,9 +54,9 @@ public class Car extends GamePiece{
         this.motor = null;
         this.wheel = null;
         this.passport = null;
-        this.finished = null;
-        this.collided = null;
-        this.turnLeft = null;
+        this.finished = false;
+        this.collided = false;
+        this.turnLeft = false;
     }
 
         //Used to stamp passport with destinations
@@ -65,6 +68,10 @@ public class Car extends GamePiece{
         if(this.map.size() == 0){
             this.finished = true;
         }
+    }
+
+    private void addTurn(){
+        this.turns = turns + 1;
     }
 
 
@@ -80,6 +87,7 @@ public class Car extends GamePiece{
         this.x = x;
 
     }
+
 
     public void setY(int y){
         this.y = y;
@@ -116,6 +124,10 @@ public class Car extends GamePiece{
     public boolean getFinished(){
         return this.finished;
     }
+    public int getTurns(){
+        return this.turns;
+    }
+
 
 
         //exports the complex pieces of a Car
@@ -180,6 +192,9 @@ public class Car extends GamePiece{
         Car nextCar = new Car(nextX, nextY, this.wheel.getCarNum());
         nextCar.setPrev(this);
         nextCar.getWheel().setDirection(whichAxis);
+        nextCar.addTurn();
+
+        return nextCar;
     }
 
 
@@ -189,7 +204,7 @@ public class Car extends GamePiece{
         char direction = this.wheel.getDirection();
         int nextX = this.getX();
         int nextY = this.getY();
-        char whichAxis;
+        char whichAxis = ' ';
 
             //Adds new coordinates to next iteration of Car
         if(direction == 'E'){
@@ -208,7 +223,9 @@ public class Car extends GamePiece{
 
         Car next = new Car(nextX, nextY, this.wheel.getCarNum());
         next.setPrev(this);
-        next.getWheel().setDirection(whichAxis);2
+        next.getWheel().setDirection(whichAxis);
+        next.addTurn();
+
             //Continues the direction and fixes the wheel if turning
         if(this.collided){
                 //Resets the direction if this car turned around an obstacle

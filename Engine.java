@@ -1,5 +1,8 @@
+//Author WD
+
 import java.util.Random;
 
+    //Handles Speed of moveable objects
 public class Engine {
 
     private int speed;

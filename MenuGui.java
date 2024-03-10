@@ -1,19 +1,22 @@
 //Author WD
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
-public class MenuGui extends JFrame {
+
+    //Openning Screen of the Game
+public class MenuGui extends JPanel {
     private JPanel menuOption;
     private JLabel instructions;
     private JPanel linedUp;
+    private JLabel size;
+    private JLabel numOfRacers;
     private JLabel replay;
+    private JLabel results;
     private JButton startButton;
     private JComboBox<String> sizeSelection;
+    private JComboBox<String> racerSelection;
 
-    public MenuGui() {
-        setTitle("Menu GUI");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public MenuGui(){
         setLayout(new BorderLayout());
 
         // Setting up the scene to be exported
@@ -21,41 +24,50 @@ public class MenuGui extends JFrame {
         this.menuOption.setLayout(new BoxLayout(menuOption, BoxLayout.Y_AXIS));
         this.menuOption.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Instructions for starting the game
-        this.instructions = new JLabel("Select a Game Size. your number will be converted"+
+            // Instructions for starting the game
+        this.instructions = new JLabel("Select a number of racers and Game Size your number will be converted"+
                                        "into a square. ex(4 = 4x4)");
+
         this.instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Setting up the Child to add to the Scene export
+            // Setting up the Child to line up options
         this.linedUp = new JPanel();
         this.linedUp.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
 
-        // Grandchildren
+            // Grandchildren
         this.startButton = new JButton("Start Your Engines");
 
-        // Sets up options
+            //Sets dropbox labels
+        this.size = new JLabel("Game Size:");
+        this.numOfRacers = new JLabel("Number of Racers:");
+
+            // Sets up options dropbox method below constructor
         this.sizeSelection = new JComboBox<>();
-        dropBoxOptions();
+        this.racerSelection = new JComboBox<>();
+        sizeDropBoxOptions();
+        racersDropBoxOptions();
 
-        // If user Won this Label Appears
-        this.replay = new JLabel();
-        this.replay.setAlignmentX(Component.CENTER_ALIGNMENT);
+            // If user played these Labels Appear
+        this.results = new JLabel();
+        this.results.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Adding Grandchildren
+
+            // Adding Grandchildren
+        this.linedUp.add(this.size);
         this.linedUp.add(sizeSelection);
-        this.linedUp.add(startButton);
+        this.linedUp.add(this.numOfRacers);
+        this.linedUp.add(racerSelection);
 
         // Adding middle children
         this.menuOption.add(instructions);
         this.menuOption.add(linedUp);
-        this.menuOption.add(replay);
+        this.menuOption.add(startButton);
+        this.menuOption.add(results);
 
-        add(this.menuOption, BorderLayout.CENTER);
-        pack();
-        setLocationRelativeTo(null);
+        this.add(this.menuOption, BorderLayout.CENTER);
     }
 
-    private void dropBoxOptions() {
+    private void sizeDropBoxOptions() {
         // Setting up the DropBox options
 
         for(int i = 9; i  > 3; i --){
@@ -64,16 +76,28 @@ public class MenuGui extends JFrame {
         }
     }
 
-    public String getSelectedItem() {
+    private void racersDropBoxOptions(){
+
+        for(int i = 3; i > 0; i--){
+            String x = String.valueOf(i);
+            this.racerSelection.addItem(x);
+        }
+    }
+
+    public String getSelectedSizeItem() {
         return (String) sizeSelection.getSelectedItem();
     }
 
-    public JButton getStartButton() {
-        return startButton;
+    public String getSelectedRacingItem(){
+        return (String) racerSelection.getSelectedItem();
     }
 
-    public JLabel getReplay() {
-        return replay;
+    public JButton getStartButton() {
+        return this.startButton;
+    }
+
+    public JLabel getResults() {
+        return this.results;
     }
 
     @Override
