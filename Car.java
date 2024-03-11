@@ -2,19 +2,21 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-    //Makes a moveable piece on the board
+//Makes a moveable piece on the board
 public class Car extends GamePiece{
 
 
     private Car prevSpot;
     private List<Destination> map;
-    private Engine motor;
-    private Steering wheel;
     private List<String> passport;
     private boolean finished;
-
     private int turns;
+    private String display;
+    private String carNum;
+    private int speed;
+    private char direction;
 
 
 
@@ -22,7 +24,6 @@ public class Car extends GamePiece{
 
             //Base class
         super(x,y);
-        this.setSolid(true);
 
             //Sub class capabilities
         this.prevSpot = null;
@@ -32,10 +33,13 @@ public class Car extends GamePiece{
             //For ending the game/ set at the end of the game
         this.finished = false;
         this.turns = 0;
+        this.speed = 0;
 
-            //complex parts
-        this.motor = new Engine();
-        this.wheel = new Steering(carNum);
+            //For gui display
+        this.setDisplay("|" + carNum + "|");
+        this.carNum = carNum;
+        this.direction = ' ';
+
     }
 
         //parameter free constructor to complete the class
@@ -44,11 +48,30 @@ public class Car extends GamePiece{
 
         this.prevSpot = null;
         this.map = null;
-        this.motor = null;
-        this.wheel = null;
         this.passport = null;
         this.finished = false;
         this.turns = -1;
+        this.display = " ";
+        this.speed = -1;
+    }
+
+        //Used to speed up or slow down
+    private void setSpeed(int speed){
+
+        //If car is stopped speed up
+        if(speed == 0){
+            this.speed = 1;
+
+        }else if(this.speed == 1) {
+
+            //Car has a 20% to speed up
+            Random random = new Random();
+            int randomNumber = random.nextInt(10) + 1;
+            //Double Speed
+            if (randomNumber > 7) {
+                this.speed = 2;
+            }
+        }
     }
 
         //Used to stamp passport with destinations
@@ -62,43 +85,31 @@ public class Car extends GamePiece{
         }
     }
 
-
-
-
-
-
-    //------public---------------------------------------------------------
-    //------Setters and then Getters---------------------------------------
-
-    public void setDestination(List<Destination> map){
-        this.map.addAll(map);
-    }
-        //Used in case the car speeds through an obstacle
-    public void setX(int x){
-        this.x = x;
-
-    }
-
-
-
-    public void setY(int y){
-        this.y = y;
-    }
-
-
-    public boolean atDestinationY(){
+        //Used to determine whether to turn or not
+    private boolean atDestinationY(){
         if((this.getY() - this.getCurrentDestination().getY()) == 0){
             return true;
         }
         return false;
     }
-    public boolean atDestinationX(){
+        //Used to determine whether to turn or not
+    private boolean atDestinationX(){
         if((this.getX() - this.getCurrentDestination().getX()) == 0){
             return true;
         }
         return false;
     }
 
+
+    //------Public Methods-------------------------------------------------
+    //------Setters and then Getters---------------------------------------
+
+        //Sets the goals of this particular instance
+    public void setDestination(List<Destination> map){
+        this.map.addAll(map);
+    }
+
+        //Sets how long it took to complete the race
     public void setTurns(int x){
         this.turns = x;
     }
@@ -107,15 +118,26 @@ public class Car extends GamePiece{
         this.prevSpot = past;
     }
 
+    public void setDirection(char xy){
+        this.direction = xy;
+    }
+
+    //emergency brakes speed setter
+    public void stop(){
+        this.speed = 0;
+    }
+
         //Used to get around obstacles
     public Destination getCurrentDestination(){
-
         return this.map.get(0);
     }
+
+        //Gets how many turns it took to finish
     public int getTurns(){
         return this.turns;
     }
 
+        //Checks to see if the car is at the destination
     public boolean gotThere(){
         if(this.getX() == this.map.get(0).getX()){
             if(this.map.get(0).getY() == this.getY()){
@@ -128,22 +150,32 @@ public class Car extends GamePiece{
         return false;
     }
 
+        //used for iterations of movement
+    public int getSpeed(){
+        return this.speed;
+    }
 
+        //gets whether this instance finished racing or not
     public boolean getFinished(){
         return this.finished;
     }
 
 
-
-        //exports the complex pieces of a Car
-    public Engine getMotor(){
-        return this.motor;
+        //when finished going places
+        //will print out Passport results
+    public String getResults(){
+        String reply = "Racer: "+ this.getCarNum() + " finished in " + this.getTurns() + " turns";
+        return reply;
     }
 
-    public Steering getWheel(){
-        return this.wheel;
+
+    public String getCarNum(){
+        return this.carNum;
     }
 
+    public char getDirection(){
+        return this.direction;
+    }
 
 
     //-----------Exotic Methods--------------------------------
@@ -152,6 +184,8 @@ public class Car extends GamePiece{
 
         //used if vehicle stops at a Destination and needs to initate movement
         public Car startMove(){
+
+
 
             //Escapes the loop
             if(this.finished){
@@ -177,27 +211,27 @@ public class Car extends GamePiece{
                 //+ or - 1 from the X axis
                 if(xDiff > 0){
                     nextX = nextX - 1;
-                    whichAxis = 'E';
+
                 }else{
                     nextX = nextX + 1;
-                    whichAxis = 'W';
+
                 }
             }else{
                 //Sets the direction from motionless
                 //+ or - 1 from the Y axis
                 if(yDiff > 0){
                     nextY = nextY - 1;
-                    whichAxis = 'S';
+
                 }else{
                     nextY = nextY + 1;
-                    whichAxis = 'N';
+
                 }
             }
 
-            Car nextCar = new Car(nextX, nextY, this.wheel.getCarNum());
-            nextCar.setPrev(this);
-            nextCar.getWheel().setDirection(whichAxis);
 
+            Car nextCar = new Car(nextX, nextY, this.getCarNum());
+            nextCar.setSpeed(this.speed);
+            nextCar.setPrev(this);
             nextCar.setDestination(this.map);
 
             return nextCar;
@@ -207,48 +241,47 @@ public class Car extends GamePiece{
         //used to move the Car
         public Car keepMove(){
 
-            char direction = this.wheel.getDirection();
+
             int nextX = this.getX();
             int nextY = this.getY();
-            char whichAxis = ' ';
 
 
 
-            //Adds new coordinates to next iteration of Car
-            if(direction == 'E'){
+
+                //Adds new coordinates to next iteration of Car
+            if(this.direction == 'X'){
                 if(this.atDestinationX()){
                     return this.startMove();
 
                 }
                 nextX = nextX + 1;
-                whichAxis = 'E';
-            } else if(direction == 'W'){
+
+            } else if(this.direction == 'X'){
                 if(this.atDestinationX()){
                     return this.startMove();
                 }
                 nextX = nextX - 1;
-                whichAxis = 'W';
-            }else if(direction == 'N'){
+
+            }else if(this.direction == 'Y'){
                 if(this.atDestinationY()){
                     return this.startMove();
 
                 }
                 nextY = nextY - 1;
-                whichAxis = 'N';
-            }else if(direction == 'S'){
+
+            }else if(this.direction == 'Y'){
                 if(this.atDestinationY()){
 
                     return this.startMove();
 
                 }
                 nextY = nextY + 1;
-                whichAxis = 'S';
+
             }
 
-            Car next = new Car(nextX, nextY, this.wheel.getCarNum());
+            Car next = new Car(nextX, nextY, this.getCarNum());
             next.setPrev(this);
-            next.getWheel().setDirection(whichAxis);
-
+            next.setSpeed(this.speed);
             next.setDestination(this.map);
 
             return next;
@@ -256,19 +289,6 @@ public class Car extends GamePiece{
         }
 
 
-    //--Finishing the Race Methods---------------------------------------------------------
-        //when finished going places
-        //will print out Passport results
 
-    public String results(){
-        String reply = "Racer: "+ this.wheel.getCarNum() + " finished in " + this.getTurns() + " turns <br> ";
-        return reply;
-    }
-
-    @Override
-    public String toString(){
-        String reply = this.wheel.getDisplay();
-        return reply;
-    }
 
 }

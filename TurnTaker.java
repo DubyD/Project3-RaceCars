@@ -58,7 +58,8 @@ public class TurnTaker extends TimerTask implements ActionListener {
             if(next.getFinished()){
 
                 if(next.getTurns() == 0){
-                    next.setTurns(this.turns);
+                    int x = this.turns;
+                    next.setTurns(x);
                 }
             }
         }
@@ -85,53 +86,52 @@ public class TurnTaker extends TimerTask implements ActionListener {
         for(Car next : oldRacers){
 
                 //Skips any finished racers
-            if(next.getFinished()){
+            if(next.getFinished() == true){
 
                 if(next.getTurns() == 0){
                     next.setTurns(this.turns);
                 }
+                this.gotham.removeRacer(next);
+                currentRacers.add(next);
                 continue;
             }
 
 
                 //Checks the speed of the vehicle. each vehicle
-            if(next.getMotor().getSpeed() == 0){
+            if(next.getSpeed() == 0){
 
                     //You need to set the speed before starting their journey
-                next.getMotor().setSpeed();
+
                 Car check = next.startMove();
 
                 if(check.gotThere() == true){
-                    check.getMotor().stop();
-                    check.getWheel().setStop();
-
+                    check.stop();
                 }
                 currentRacers.add(check);
 
 
             }else{
 
-                    //Gives an opprotunity to speed up
-                next.getMotor().setSpeed();
-                for(int i = 0; i < next.getMotor().getSpeed(); i++) {
+                    //Checks the speed and iterates that many times through movement
+
+                for(int i = 0; i < next.getSpeed(); i++) {
                     Car check = next.keepMove();
 
                         //Checks if it hit the destination
                     if(check.gotThere()){
-                        check.getMotor().stop();
-                        check.getWheel().setStop();
-
+                        check.stop();
+                        currentRacers.add(check);
+                        continue;
                     }
+
                     currentRacers.add(check);
                 }
-
             }
-
                 //Removes old spot
             this.gotham.removeRacer(next);
 
         }
-
+            //adds new spot
         this.gotham.setRacers(currentRacers);
 
 

@@ -12,16 +12,17 @@ public class GameGrid extends JPanel {
     private int size;
     private City gotham;
 
+        //Iterates through the city to apply relevant components
     public GameGrid(int size, int racers) {
-
+            //Makes it pretty
         this.setLayout(new BorderLayout());
 
-
+            //Sets the size and city
         this.gotham = new City(size, racers, this); //uses the city to set text in labels
         this.size = size; //saves size in an easy to access variable
 
+            //Gui representation of city
         labels = new JLabel[size][size];
-
         JPanel gridPanel = new JPanel(new GridLayout(size, size));
 
         for (int row = 0; row < size; row++) {
@@ -40,7 +41,7 @@ public class GameGrid extends JPanel {
             }
         }
 
-
+            //Adds the Grid and Updates user view
         this.add(gridPanel, BorderLayout.CENTER);
         this.updateGrid();
 
@@ -60,11 +61,16 @@ public class GameGrid extends JPanel {
 
             // Set text for occupied positions, reLabel
         for (GamePiece next : this.gotham.getBoard()) {
-            labels[next.getX()][next.getY()].setText(next.toString());
+            if(labels[next.getX()][next.getY()].getText().equals("")) {
+                labels[next.getX()][next.getY()].setText(next.toString());
+            }else{
+                labels[next.getX()][next.getY()].setText(labels[next.getX()][next.getY()].getText() + next.toString());
+            }
         }
 
     }
 
+        //Used to update after cars move
     public void updateLabels() {
         updateGrid();
     }
@@ -73,7 +79,7 @@ public class GameGrid extends JPanel {
         return this.gotham.getFinished();
     }
 
-    public String getResults(){
-        return this.gotham.getResults();
+    public City getGotham(){
+        return this.gotham;
     }
 }

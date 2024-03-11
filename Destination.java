@@ -9,7 +9,6 @@ public class Destination extends GamePiece{
         //toString, isSolid boolean
         super(x,y);
         this.setDisplay(display);
-        this.setSolid(false);
 
         this.token = display;
 

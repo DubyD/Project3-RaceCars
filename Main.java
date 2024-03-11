@@ -10,11 +10,10 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Auto_Racing");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(1200, 1200);
+            frame.setSize(800, 600);
 
             SceneSwitcher sceneSwitcher = new SceneSwitcher(frame);
 
-            frame.pack();
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });

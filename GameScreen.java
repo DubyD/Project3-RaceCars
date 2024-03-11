@@ -20,7 +20,7 @@ public class GameScreen extends JPanel {
             // Create JButton
         this.endGameButton = new JButton("End Game");
 
-        // Create JPanel for the button
+        // Creates a space for the button
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(endGameButton);
 
@@ -40,8 +40,8 @@ public class GameScreen extends JPanel {
     }
 
 
-    public String getResults(){
-        return this.gameGrid.getResults();
+    public City getGotham(){
+        return this.gameGrid.getGotham();
     }
 
     public boolean getFinished(){

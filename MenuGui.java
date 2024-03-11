@@ -8,10 +8,9 @@ public class MenuGui extends JPanel {
     private JPanel menuOption;
     private JLabel instructions;
     private JPanel linedUp;
+    private JPanel resultPanel;
     private JLabel size;
     private JLabel numOfRacers;
-    private JLabel replay;
-    private JLabel results;
     private JButton startButton;
     private JComboBox<String> sizeSelection;
     private JComboBox<String> racerSelection;
@@ -19,14 +18,14 @@ public class MenuGui extends JPanel {
     public MenuGui(){
         setLayout(new BorderLayout());
 
-        // Setting up the scene to be exported
+            // Setting up the scene to be exported
         this.menuOption = new JPanel();
         this.menuOption.setLayout(new BoxLayout(menuOption, BoxLayout.Y_AXIS));
         this.menuOption.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             // Instructions for starting the game
         this.instructions = new JLabel("Select a number of racers and Game Size your number will be converted"+
-                                       "into a square. ex(4 = 4x4)");
+                                       "into a square. ex(5 = 5x5)");
 
         this.instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -47,10 +46,7 @@ public class MenuGui extends JPanel {
         sizeDropBoxOptions();
         racersDropBoxOptions();
 
-            // If user played these Labels Appear
-        this.results = new JLabel();
-        this.results.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        this.resultPanel = new JPanel();
 
             // Adding Grandchildren
         this.linedUp.add(this.size);
@@ -62,12 +58,15 @@ public class MenuGui extends JPanel {
         this.menuOption.add(instructions);
         this.menuOption.add(linedUp);
         this.menuOption.add(startButton);
-        this.menuOption.add(results);
+        this.menuOption.add(resultPanel);
+
 
         this.add(this.menuOption, BorderLayout.CENTER);
     }
 
+        //Adds map size options
     private void sizeDropBoxOptions() {
+
         // Setting up the DropBox options
 
         for(int i = 5; i  < 21; i++){
@@ -76,6 +75,7 @@ public class MenuGui extends JPanel {
         }
     }
 
+        //Adds number of racers to the field
     private void racersDropBoxOptions(){
 
         for(int i = 1; i < 4; i++){
@@ -84,20 +84,32 @@ public class MenuGui extends JPanel {
         }
     }
 
+        //Gets the selected Map Size
     public String getSelectedSizeItem() {
         return (String) sizeSelection.getSelectedItem();
     }
 
+        //Gets the selected number of racers
     public String getSelectedRacingItem(){
         return (String) racerSelection.getSelectedItem();
     }
 
+        //Gets the initiate button
     public JButton getStartButton() {
         return this.startButton;
     }
 
-    public JLabel getResults() {
-        return this.results;
+
+        //Sets the results of the previous match under the mainmenu
+    public void setResults(Car[] working) {
+            //Resets the results from previous races
+        this.resultPanel.removeAll();
+            //Iterates through the Rankings results()
+        for(Car next : working){
+            JLabel ranking = new JLabel();
+            ranking.setText(next.getResults());
+            this.resultPanel.add(ranking);
+        }
     }
 
     @Override

@@ -18,11 +18,12 @@ public class SceneSwitcher {
 
     public SceneSwitcher(JFrame frame) {
         this.frame = frame;
-        this.frame.setSize(1200,1200);
 
+            //Sets up the Content of the two screens
         this.menuSetter = new MenuGui();
         this.gameBoard = new GameScreen();
 
+            //adds a Lambda function to the start button
         this.menuSetter.getStartButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -34,12 +35,11 @@ public class SceneSwitcher {
             }
         });
 
+            //Sets up the Menu Screen
         this.menuPanel = new JPanel();
-        this.menuPanel.setLayout(new BorderLayout());
-        this.menuPanel.add(new JLabel("Select a Puzzle size, then press 'Start Puzzle'!\n" +
-                "Match the people to their attributes, then press 'check answers'\n"), BorderLayout.NORTH);
         this.menuPanel.add(menuSetter, BorderLayout.CENTER);
 
+            //Initiates the menu first
         this.frame.setContentPane(menuPanel);
         this.frame.setVisible(true);
     }
@@ -51,8 +51,9 @@ public class SceneSwitcher {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(gameBoard.getFinished()){
+                    menuSetter.setResults(gameBoard.getGotham().getResults());
                     showMenu();
-                    menuSetter.getResults().setText(gameBoard.getResults());
+
                 }
             }
         });

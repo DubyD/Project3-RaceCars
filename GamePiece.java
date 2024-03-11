@@ -21,7 +21,7 @@ public class GamePiece {
     public GamePiece(){
         this.x = -1;
         this.y = -1;
-        this.solid = false;
+
     }
 
     //--------Getters----------------------------------------------------
@@ -35,14 +35,10 @@ public class GamePiece {
     }
 
         //checks if this object is solid
-    public boolean getSolid(){
-        return this.solid;
-    }
+
 
     //--------Setters----------------------------------------------------
-    public void setSolid(boolean solid){
-        this.solid = solid;
-    }
+
         //Used by Cars
     protected void setX(int x){
         this.x = x;

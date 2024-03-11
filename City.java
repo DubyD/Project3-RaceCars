@@ -159,21 +159,23 @@ public class City {
     }
 
 
-        //String of The Race results
-    public String getResults(){
-        String reply = "";
+        //Array of Ranking order to be iterated onto JLables
+    public Car[] getResults(){
+
+
             //Sorts from smallest to largest
+        int x = 0;
         int n = this.racers.size();
         boolean swapped;
 
+            //sets up an array for easier handling and less memory
         Car[] arr = new Car[this.racers.size()];
-        int x = 0;
-
+            //iterates the List into an array
         for(Car next : this.racers){
             arr[x] = next;
             x++;
         }
-
+            //do loop to swap lowest into array[0]
         do {
             swapped = false;
             for (int i = 1; i < n; i++) {
@@ -187,14 +189,7 @@ public class City {
             }
         } while (swapped);
 
-
-        reply = "<html>Car: " + arr[0].getWheel().getCarNum() + ", won the race! The results are: <br> ";
-
-        for(Car next : arr){
-            reply = reply + next.results();
-        }
-        reply = reply + "<html>";
-        return reply;
+        return arr;
     }
 
 
