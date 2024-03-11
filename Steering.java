@@ -10,8 +10,8 @@ public class Steering {
 
     public Steering(String carNum){
         this.direction = ' ';
-        this.display = " ";
         this.carNum = carNum;
+        this.display = "|" + this.carNum + "|";
     }
 
     public String getCarNum(){
@@ -20,22 +20,7 @@ public class Steering {
 
 
         //Sets the Gui display of the car based on direction
-    private void setDisplay(){
-            //If the car isn't moving
-        if(this.direction == ' '){
-            this.display = "|" + this.carNum + "|";
 
-            //if the car is moving
-        }else if(this.direction == 'E'){
-            this.display = this.carNum + ">";
-        }else if(this.direction == 'W'){
-            this.display = "<" + this.carNum;
-        }else if(this.direction == 'N'){
-            this.display = "^\n" + this.carNum;
-        }else if(this.direction == 'S'){
-            this.display = this.carNum + "\nv";
-        }
-    }
 
         //alters the Cars toString()
     public String getDisplay(){
@@ -48,13 +33,11 @@ public class Steering {
         //Used to stop the Car
     public void setStop(){
         this.direction = ' ';
-        this.setDisplay();
     }
 
         //Used to set starting movement
     public void setDirection(char direction){
         this.direction = direction;
-        this.setDisplay();
     }
 
         //Must turn around an object
@@ -62,28 +45,28 @@ public class Steering {
 
                 //Handles turning facing East
         if(this.direction == 'E'){
-            if(leftTurn){
+            if(!leftTurn){
                 this.direction = 'N';
             }else{
                 this.direction = 'S';
             }
                 //Handles turning facing West
         }else if(this.direction == 'W'){
-            if(leftTurn){
+            if(!leftTurn){
                 this.direction = 'S';
             }else{
                 this.direction = 'N';
             }
                 //Handles turning facing North
         }else if(this.direction == 'N'){
-            if(leftTurn){
+            if(!leftTurn){
                 this.direction = 'W';
             }else{
                 this.direction = 'E';
             }
                 //Handles turning facing South
         }else if(this.direction == 'S'){
-            if(leftTurn){
+            if(!leftTurn){
                 this.direction = 'E';
             }else{
                 this.direction = 'W';

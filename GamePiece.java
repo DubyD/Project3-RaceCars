@@ -13,7 +13,7 @@ public class GamePiece {
         this.x = x;
         this.y = y;
         this.solid = true;
-        this.display = "";
+        this.display = "#";
 
     }
 

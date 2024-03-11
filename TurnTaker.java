@@ -1,13 +1,15 @@
 //Author WD
 
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
+import javax.swing.Timer;
 import java.util.TimerTask;
 
     //Separates the Timer Task to tidy up the city class
-public class TurnTaker extends TimerTask {
+public class TurnTaker extends TimerTask implements ActionListener {
 
     private City gotham;
     private boolean finished;
@@ -19,8 +21,10 @@ public class TurnTaker extends TimerTask {
         this.gotham = gotham;
         this.finished = false;
         this.turns = 0;
-        this.clock = gotham.getClock();
+        this.clock = new Timer(300, this);
         this.guiUpdater = guiUpdater;
+        this.clock.start();
+
     }
 
         //Second constructor to complete class
@@ -32,13 +36,16 @@ public class TurnTaker extends TimerTask {
         this.guiUpdater = null;
     }
 
-        //Used to optimize turning to the shortest path
 
 
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            this.run();
+        }
 
-
-    @Override
+        @Override
     public void run(){
+
 
         this.turns = this.turns + 1;
             //moves cars and checks obstacles
@@ -48,14 +55,18 @@ public class TurnTaker extends TimerTask {
             //Checks to see if the race is over
         for(Car next : this.gotham.getRacers()){
             gameOver = gameOver && next.getFinished();
-            if(gameOver = true){
-                next.setTurnCount(this.turns);
+            if(next.getFinished()){
+
+                if(next.getTurns() == 0){
+                    next.setTurns(this.turns);
+                }
             }
         }
         this.finished = gameOver;
         if(this.finished){
-            this.clock.cancel();
+            this.clock.stop();
         }
+
             //Updates Gui
         this.guiUpdater.updateLabels();
     }
@@ -64,14 +75,21 @@ public class TurnTaker extends TimerTask {
         return this.finished;
     }
 
-    public void startGame(){
+    private void startGame(){
+
 
         List<Car> currentRacers = new ArrayList<Car>();
 
-        for(Car next : this.gotham.getRacers()){
+        List<Car> oldRacers = new ArrayList<>();
+        oldRacers.addAll(this.gotham.getRacers());
+        for(Car next : oldRacers){
 
                 //Skips any finished racers
             if(next.getFinished()){
+
+                if(next.getTurns() == 0){
+                    next.setTurns(this.turns);
+                }
                 continue;
             }
 
@@ -83,29 +101,7 @@ public class TurnTaker extends TimerTask {
                 next.getMotor().setSpeed();
                 Car check = next.startMove();
 
-
-                for(GamePiece wall : this.gotham.getObstacles()){
-                    if(wall.getX() == check.getX()){
-                        if(wall.getY() == check.getY()){
-
-
-                            int diff;
-                            if(check.getWheel().getDirection() == 'N' || check.getWheel().getDirection() == 'S'){
-                                diff = next.getCurrentDestination().getX() - next.getX();
-                            }else{
-                                diff = next.getCurrentDestination().getY() - next.getY();
-                            }
-
-
-
-                            next.getMotor().turning();
-                            next.collison(this.leftTurn(check.getWheel().getDirection(), diff));
-                            check = next;
-                        }
-                    }
-                }
-
-                if(check.gotThere()){
+                if(check.gotThere() == true){
                     check.getMotor().stop();
                     check.getWheel().setStop();
 
@@ -120,32 +116,6 @@ public class TurnTaker extends TimerTask {
                 for(int i = 0; i < next.getMotor().getSpeed(); i++) {
                     Car check = next.keepMove();
 
-
-                    for (GamePiece wall : this.gotham.getObstacles()) {
-
-                            //if you work through the nested loops it
-                        if (wall.getX() == check.getX()) {
-                            if (wall.getY() == check.getY()) {
-
-                                    //slows the car down on collision
-                                i = i + 1;
-                                int diff;
-                                if(check.getWheel().getDirection() == 'N' || check.getWheel().getDirection() == 'S'){
-                                    diff = next.getCurrentDestination().getX() - next.getX();
-                                }else{
-                                    diff = next.getCurrentDestination().getY() - next.getY();
-                                }
-
-
-
-                                next.getMotor().turning();
-                                next.collison(this.leftTurn(check.getWheel().getDirection(), diff));
-                                check = next;
-                            }
-                        }
-
-                    }
-
                         //Checks if it hit the destination
                     if(check.gotThere()){
                         check.getMotor().stop();
@@ -157,55 +127,15 @@ public class TurnTaker extends TimerTask {
 
             }
 
-
+                //Removes old spot
+            this.gotham.removeRacer(next);
 
         }
 
         this.gotham.setRacers(currentRacers);
 
+
     }
-
-        //Used in StartGame for Optimized turning
-    private boolean leftTurn(char direction, int diff){
-        boolean leftTurn = false;
-        //Superior turning mechanism for each direction
-        if(direction == 'E'){
-            //Turns N or S
-            if(diff < 0){
-                leftTurn = true;
-            }else{
-                leftTurn = false;
-            }
-
-        }else if(direction == 'W') {
-            //Turn S or N
-            if(diff > 0){
-                leftTurn = true;
-            }else{
-                leftTurn = false;
-            }
-
-        }else if(direction == 'N'){
-            //Turns W or E
-            if(diff < 0){
-                leftTurn = true;
-            }else{
-                leftTurn = false;
-            }
-
-        }else if(direction == 'S'){
-            //Turns E or W
-            if(diff > 0){
-                leftTurn = true;
-            }else{
-                leftTurn = false;
-            }
-        }
-        return leftTurn;
-    }
-
-
-
 
     @Override
     public String toString(){

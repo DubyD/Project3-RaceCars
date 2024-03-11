@@ -70,7 +70,7 @@ public class MenuGui extends JPanel {
     private void sizeDropBoxOptions() {
         // Setting up the DropBox options
 
-        for(int i = 9; i  > 3; i --){
+        for(int i = 5; i  < 21; i++){
             String x = String.valueOf(i);
             this.sizeSelection.addItem(x);
         }
@@ -78,7 +78,7 @@ public class MenuGui extends JPanel {
 
     private void racersDropBoxOptions(){
 
-        for(int i = 3; i > 0; i--){
+        for(int i = 1; i < 4; i++){
             String x = String.valueOf(i);
             this.racerSelection.addItem(x);
         }

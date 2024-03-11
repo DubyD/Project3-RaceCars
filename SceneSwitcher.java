@@ -18,6 +18,7 @@ public class SceneSwitcher {
 
     public SceneSwitcher(JFrame frame) {
         this.frame = frame;
+        this.frame.setSize(1200,1200);
 
         this.menuSetter = new MenuGui();
         this.gameBoard = new GameScreen();

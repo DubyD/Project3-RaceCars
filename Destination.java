@@ -19,4 +19,9 @@ public class Destination extends GamePiece{
         return this.token;
     }
 
+    @Override
+    public String toString(){
+        return this.token;
+    }
+
 }

@@ -28,6 +28,7 @@ public class GameScreen extends JPanel {
         this.add(buttonPanel, BorderLayout.SOUTH);
 
         this.setVisible(true);
+
     }
 
     public JButton getEndButton(){

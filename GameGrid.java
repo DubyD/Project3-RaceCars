@@ -44,39 +44,25 @@ public class GameGrid extends JPanel {
         this.add(gridPanel, BorderLayout.CENTER);
         this.updateGrid();
 
+
     }
 
         //Used to update Labels in TurnTaker
     private void updateGrid() {
 
 
-
+            //Clears all Labels
         for (int row = 0; row < this.size; row++) {
             for (int col = 0; col < this.size; col++) {
-
-                //Selecting text for Label
-                String text = "";
-                for(GamePiece next : this.gotham.getBoard()){
-                    if(next.getX() == row){
-                        if(next.getY() == col){
-                            text = next.toString();
-                        }
-                    }
-                }
-                for(Car next : this.gotham.getRacers()){
-                    if(next.getX() == row) {
-                        if (next.getY() == col) {
-                            text = text + next.toString();
-                        }
-                    }
-                }
-                if(text.equals("")){
-                    text = ".";
-                }
-
-                labels[row][col].setText(text);
+                labels[row][col].setText("");
             }
         }
+
+            // Set text for occupied positions, reLabel
+        for (GamePiece next : this.gotham.getBoard()) {
+            labels[next.getX()][next.getY()].setText(next.toString());
+        }
+
     }
 
     public void updateLabels() {

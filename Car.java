@@ -13,10 +13,8 @@ public class Car extends GamePiece{
     private Steering wheel;
     private List<String> passport;
     private boolean finished;
-    private boolean collided;
-    private boolean turnLeft;
-    private int turns;
 
+    private int turns;
 
 
 
@@ -31,14 +29,9 @@ public class Car extends GamePiece{
         this.map = new ArrayList<Destination>();
         this.passport = new ArrayList<String>();
 
-            //For ending the game
+            //For ending the game/ set at the end of the game
         this.finished = false;
         this.turns = 0;
-
-            //if collision occurs turnleft activates
-            //if turnleft is false turn right if true turn left
-        this.collided = false;
-        this.turnLeft = false;
 
             //complex parts
         this.motor = new Engine();
@@ -55,8 +48,7 @@ public class Car extends GamePiece{
         this.wheel = null;
         this.passport = null;
         this.finished = false;
-        this.collided = false;
-        this.turnLeft = false;
+        this.turns = -1;
     }
 
         //Used to stamp passport with destinations
@@ -70,17 +62,16 @@ public class Car extends GamePiece{
         }
     }
 
-    private void addTurn(){
-        this.turns = turns + 1;
-    }
+
+
+
 
 
     //------public---------------------------------------------------------
     //------Setters and then Getters---------------------------------------
 
-        //Used to set a random order of objectives
     public void setDestination(List<Destination> map){
-        this.map = map;
+        this.map.addAll(map);
     }
         //Used in case the car speeds through an obstacle
     public void setX(int x){
@@ -89,29 +80,46 @@ public class Car extends GamePiece{
     }
 
 
+
     public void setY(int y){
         this.y = y;
     }
 
 
+    public boolean atDestinationY(){
+        if((this.getY() - this.getCurrentDestination().getY()) == 0){
+            return true;
+        }
+        return false;
+    }
+    public boolean atDestinationX(){
+        if((this.getX() - this.getCurrentDestination().getX()) == 0){
+            return true;
+        }
+        return false;
+    }
+
+    public void setTurns(int x){
+        this.turns = x;
+    }
         //In case of collision saves old space
     public void setPrev(Car past){
         this.prevSpot = past;
     }
 
-        //Used to save how much time this car took to finish
-    public void setTurnCount(int turns){
-        this.turns = turns;
-    }
-
         //Used to get around obstacles
     public Destination getCurrentDestination(){
+
         return this.map.get(0);
+    }
+    public int getTurns(){
+        return this.turns;
     }
 
     public boolean gotThere(){
-        if(this.map.get(0).getX() == this.getX()){
+        if(this.getX() == this.map.get(0).getX()){
             if(this.map.get(0).getY() == this.getY()){
+
 
                 this.getNextDestination();
                 return true;
@@ -123,9 +131,6 @@ public class Car extends GamePiece{
 
     public boolean getFinished(){
         return this.finished;
-    }
-    public int getTurns(){
-        return this.turns;
     }
 
 
@@ -146,133 +151,124 @@ public class Car extends GamePiece{
 
 
         //used if vehicle stops at a Destination and needs to initate movement
-    public Car startMove(){
+        public Car startMove(){
 
             //Escapes the loop
-        if(this.finished){
-            return this;
-        }
+            if(this.finished){
+                return this;
+            }
 
-        int nextX = this.getX();
-        int nextY = this.getY();
-        char whichAxis;
+            int nextX = this.getX();
+            int nextY = this.getY();
+            char whichAxis;
 
             //Where are we moving
-        int goalX = this.map.get(0).getX();
-        int goalY = this.map.get(0).getY();
+            int goalX = this.map.get(0).getX();
+            int goalY = this.map.get(0).getY();
 
             //shortens the largest gap
-        int xDiff = this.getX() - goalX;
-        int yDiff = this.getY() - goalY;
+            int xDiff = this.getX() - goalX;
+            int yDiff = this.getY() - goalY;
 
             //If xDiff  > yDiff EW
             //If yDiff => xDiff NS
-        if(Math.abs(xDiff) > Math.abs(yDiff)){
+            if(Math.abs(xDiff) > Math.abs(yDiff)){
                 //Sets the direction from motionless
                 //+ or - 1 from the X axis
-            if(xDiff > 0){
-                nextX = nextX + 1;
-                whichAxis = 'E';
+                if(xDiff > 0){
+                    nextX = nextX - 1;
+                    whichAxis = 'E';
+                }else{
+                    nextX = nextX + 1;
+                    whichAxis = 'W';
+                }
             }else{
-                nextX = nextX - 1;
-                whichAxis = 'W';
-            }
-        }else{
                 //Sets the direction from motionless
                 //+ or - 1 from the Y axis
-            if(yDiff > 0){
-                nextY = nextY + 1;
-                whichAxis = 'S';
-            }else{
-                nextY = nextY - 1;
-                whichAxis = 'N';
+                if(yDiff > 0){
+                    nextY = nextY - 1;
+                    whichAxis = 'S';
+                }else{
+                    nextY = nextY + 1;
+                    whichAxis = 'N';
+                }
             }
+
+            Car nextCar = new Car(nextX, nextY, this.wheel.getCarNum());
+            nextCar.setPrev(this);
+            nextCar.getWheel().setDirection(whichAxis);
+
+            nextCar.setDestination(this.map);
+
+            return nextCar;
         }
-
-        Car nextCar = new Car(nextX, nextY, this.wheel.getCarNum());
-        nextCar.setPrev(this);
-        nextCar.getWheel().setDirection(whichAxis);
-        nextCar.addTurn();
-
-        return nextCar;
-    }
 
 
         //used to move the Car
-    public Car keepMove(){
+        public Car keepMove(){
 
-        char direction = this.wheel.getDirection();
-        int nextX = this.getX();
-        int nextY = this.getY();
-        char whichAxis = ' ';
+            char direction = this.wheel.getDirection();
+            int nextX = this.getX();
+            int nextY = this.getY();
+            char whichAxis = ' ';
+
+
 
             //Adds new coordinates to next iteration of Car
-        if(direction == 'E'){
-            nextX = nextX + 1;
-            whichAxis = 'E';
-        } else if(direction == 'W'){
-            nextX = nextX - 1;
-            whichAxis = 'W';
-        }else if(direction == 'N'){
-            nextY = nextY - 1;
-            whichAxis = 'N';
-        }else if(direction == 'S'){
-            nextY = nextY + 1;
-            whichAxis = 'S';
-        }
+            if(direction == 'E'){
+                if(this.atDestinationX()){
+                    return this.startMove();
 
-        Car next = new Car(nextX, nextY, this.wheel.getCarNum());
-        next.setPrev(this);
-        next.getWheel().setDirection(whichAxis);
-        next.addTurn();
+                }
+                nextX = nextX + 1;
+                whichAxis = 'E';
+            } else if(direction == 'W'){
+                if(this.atDestinationX()){
+                    return this.startMove();
+                }
+                nextX = nextX - 1;
+                whichAxis = 'W';
+            }else if(direction == 'N'){
+                if(this.atDestinationY()){
+                    return this.startMove();
 
-            //Continues the direction and fixes the wheel if turning
-        if(this.collided){
-                //Resets the direction if this car turned around an obstacle
-            if(this.turnLeft){
-                //if it turned left it will redirect back right
-                next.getWheel().turn(false);
+                }
+                nextY = nextY - 1;
+                whichAxis = 'N';
+            }else if(direction == 'S'){
+                if(this.atDestinationY()){
 
-            }else{
-                //if it turned right it will redirect back left
-                next.getWheel().turn(true);
+                    return this.startMove();
+
+                }
+                nextY = nextY + 1;
+                whichAxis = 'S';
             }
+
+            Car next = new Car(nextX, nextY, this.wheel.getCarNum());
+            next.setPrev(this);
+            next.getWheel().setDirection(whichAxis);
+
+            next.setDestination(this.map);
+
+            return next;
+
         }
 
-        return next;
-
-    }
-
-        //For object interaction. that isnt a Destination
-    public void collison(boolean tryLeft){
-
-        if(tryLeft){
-            this.collided = true;
-            this.turnLeft = true;
-
-        }else{
-            this.collided = true;
-        }
-
-        this.wheel.turn(this.turnLeft);
-
-    }
 
     //--Finishing the Race Methods---------------------------------------------------------
         //when finished going places
         //will print out Passport results
 
     public String results(){
-        String reply = "You have collected Destinations: ";
-        for(String next : this.passport){
-            reply = reply + next + "\n";
-        }
-        reply = reply + " in " + this.turns + " amount of turns";
+        String reply = "Racer: "+ this.wheel.getCarNum() + " finished in " + this.getTurns() + " turns <br> ";
         return reply;
     }
 
+    @Override
     public String toString(){
-        return this.wheel.getDisplay();
+        String reply = this.wheel.getDisplay();
+        return reply;
     }
 
 }
