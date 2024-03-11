@@ -47,6 +47,12 @@ public class GameGrid extends JPanel {
 
 
     }
+    public GameGrid(){
+        this.gotham = null;
+        this.labels = null;
+        this.size = -1;
+    }
+
 
         //Used to update Labels in TurnTaker
     private void updateGrid() {

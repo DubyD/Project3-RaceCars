@@ -14,12 +14,13 @@ public class Destination extends GamePiece{
 
     }
 
-    public String getToken(){
-        return this.token;
+    public Destination(){
+        super(-1,-1);
+        this.token = " ";
     }
 
-    @Override
-    public String toString(){
+
+    public String getToken(){
         return this.token;
     }
 

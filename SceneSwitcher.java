@@ -1,5 +1,7 @@
 //Author WD
 
+import javafx.scene.Scene;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -42,6 +44,15 @@ public class SceneSwitcher {
             //Initiates the menu first
         this.frame.setContentPane(menuPanel);
         this.frame.setVisible(true);
+    }
+
+        //non parameter constructor to complete class
+    public SceneSwitcher(){
+        this.menuPanel = null;
+        this.frame = null;
+        this.gameBoard = null;
+        this.gamePanel = null;
+        this.menuSetter = null;
     }
 
     private void showGame(String size, String racersNum) {

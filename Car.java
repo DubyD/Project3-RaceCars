@@ -62,15 +62,6 @@ public class Car extends GamePiece{
         if(speed == 0){
             this.speed = 1;
 
-        }else if(this.speed == 1) {
-
-            //Car has a 20% to speed up
-            Random random = new Random();
-            int randomNumber = random.nextInt(10) + 1;
-            //Double Speed
-            if (randomNumber > 7) {
-                this.speed = 2;
-            }
         }
     }
 

@@ -14,7 +14,6 @@ public class City {
     private List<Car> racers;
 
     private TurnTaker pacer;
-    private int size;
 
     public City(int dimension, int racers, GameGrid gui){
 
@@ -22,8 +21,6 @@ public class City {
 
         this.racers = new ArrayList<Car>();
         this.stops = new ArrayList<Destination>();
-        this.size = dimension;
-
 
             //Methods for initiating GamePieces
             //Board which holds all the pieces

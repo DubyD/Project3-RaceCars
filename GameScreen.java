@@ -31,12 +31,13 @@ public class GameScreen extends JPanel {
 
     }
 
-    public JButton getEndButton(){
-        return this.endGameButton;
-    }
-
     public GameScreen(){
         this.gameGrid = null;
+        this.endGameButton = null;
+    }
+
+    public JButton getEndButton(){
+        return this.endGameButton;
     }
 
 

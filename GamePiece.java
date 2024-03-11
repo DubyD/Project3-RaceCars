@@ -4,7 +4,6 @@ public class GamePiece {
     protected int y;
 
         //Every GamePiece has collidable
-    private boolean solid;
     private String display;
 
         //constructor for the Base Class
@@ -12,7 +11,6 @@ public class GamePiece {
 
         this.x = x;
         this.y = y;
-        this.solid = true;
         this.display = "#";
 
     }
@@ -38,15 +36,7 @@ public class GamePiece {
 
 
     //--------Setters----------------------------------------------------
-
-        //Used by Cars
-    protected void setX(int x){
-        this.x = x;
-    }
-        //Used by Cars
-    protected void setY(int y){
-        this.y = y;
-    }
+    
 
         //Setting the String
     public void setDisplay(String display){
