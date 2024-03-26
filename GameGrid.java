@@ -11,15 +11,19 @@ public class GameGrid extends JPanel {
 
     private int size;
     private City gotham;
+    private TurnTaker timeWarp;
 
         //Iterates through the city to apply relevant components
     public GameGrid(int size, int racers) {
             //Makes it pretty
         this.setLayout(new BorderLayout());
 
+
+
             //Sets the size and city
-        this.gotham = new City(size, racers, this); //uses the city to set text in labels
+        this.gotham = new City(size, racers); //uses the city to set text in labels
         this.size = size; //saves size in an easy to access variable
+        this.timeWarp = new TurnTaker(this.gotham, this);
 
             //Gui representation of city
         labels = new JLabel[size][size];
@@ -70,7 +74,9 @@ public class GameGrid extends JPanel {
             if(labels[next.getX()][next.getY()].getText().equals("")) {
                 labels[next.getX()][next.getY()].setText(next.toString());
             }else{
-                labels[next.getX()][next.getY()].setText(labels[next.getX()][next.getY()].getText() + next.toString());
+                String temp = labels[next.getX()][next.getY()].getText();
+                temp = temp + next.toString();
+                labels[next.getX()][next.getY()].setText(temp);
             }
         }
 

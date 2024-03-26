@@ -101,13 +101,13 @@ public class MenuGui extends JPanel {
 
 
         //Sets the results of the previous match under the mainmenu
-    public void setResults(Car[] working) {
+    public void setResults(String[] working) {
             //Resets the results from previous races
         this.resultPanel.removeAll();
             //Iterates through the Rankings results()
-        for(Car next : working){
+        for(String next : working){
             JLabel ranking = new JLabel();
-            ranking.setText(next.getResults());
+            ranking.setText(next);
             this.resultPanel.add(ranking);
         }
     }

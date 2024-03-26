@@ -1,49 +1,55 @@
-//Author WD
 
+//Author WD
+//Some bug fixes by AW (3-23)
+
+import sun.security.krb5.internal.crypto.Des;
 
 import java.util.*;
-import javax.swing.Timer;
 
-    //Back end of all the game components
+
 public class City {
 
-    private Timer clock;
-
+    //Holds all the pieces of the Game
     private List<GamePiece> board;
+
+    //Holds all the destinations to apply to the Racers destination lists
     private List<Destination> stops;
+
+    //Holds all the competitors in an easy to access list
     private List<Car> racers;
 
-    private TurnTaker pacer;
 
-    public City(int dimension, int racers, GameGrid gui){
+    //Main Constructor
+    public City(int dimension, int numOfCars){
 
-            //Sets the boundaries
-
-        this.racers = new ArrayList<Car>();
-        this.stops = new ArrayList<Destination>();
-
-            //Methods for initiating GamePieces
-            //Board which holds all the pieces
+        //initiates the Lists
         this.board = new ArrayList<GamePiece>();
+        this.stops = new ArrayList<Destination>();
+        this.racers = new ArrayList<Car>();
+
+        //Factory Methods Setting the Lists
         this.makeDestinations(dimension);
+        this.addCompetitors(dimension, numOfCars);
+
+        //Adding the pieces to the board
+        //Keeps all the pieces together
+        //AW (3-23) Changed add() to addAll()
         this.board.addAll(this.stops);
-        this.addCompetitors(dimension, racers);
         this.board.addAll(this.racers);
 
-        //This sets the Clock to
-        this.pacer = new TurnTaker(this, gui);
-
-
     }
 
+    //No Parameter Constructor to complete class
     public City(){
-        this.clock = null;
+        this.board = null;
         this.stops = null;
         this.racers = null;
-
     }
-//----------------Factory Methods--------------------------------------------------
-        //Used to compare coordinates to an Object in following methods
+
+//------------------------Methods used in Factory Methods----------------------------
+
+    //Used to see if the spot is available or not
+    //Used to tidy up more complex methods
     private boolean validSpot(int x, int y, GamePiece one){
         if(x == one.getX()){
             if(y == one.getY()){
@@ -53,149 +59,179 @@ public class City {
         return true;
     }
 
-
-            //Loops through all GamePieces
-        private boolean isFreeSpace(int x, int y) {
-            for (Destination stop : this.stops) {
-                if (!validSpot(x, y, stop)) {
-                    return false;
-                }
+    //Loops through the Board components to see if this is a valid space
+    //Loops through all the components even if they haven't been added to this.board
+    private boolean isFreeSpace(int x, int y){
+        //iterates through Destinations
+        for(Destination next: this.stops){
+            if(!validSpot(x,y, next)){
+                return false;
             }
-
-            for (Car player : this.racers) {
-                if (!validSpot(x, y, player)) {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
-        //Creates 4 destinations for travellers
+        for(Car next : this.racers){
+            if(!validSpot(x, y, next)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    //Creates a List of 4 Destinations in random locations
     private void makeDestinations(int dimension){
-        //Randomizes their locations
+
+        //creates randomizer
         Random randomizer = new Random();
+        //Names Destination
         char stop = 'A';
 
         for(int i = 0; i < 4; i++){
-                // creates random Coordinates on the gameboard.
+
+            //initiates Random X,Y locations
             int randomX;
             int randomY;
 
-            // Randomizes coordinates
-            do {
+            do{
+                //Randomizers X, and Y until the space is valid
                 randomX = randomizer.nextInt(dimension);
                 randomY = randomizer.nextInt(dimension);
-            } while (!this.isFreeSpace(randomX, randomY));
+            } while(!this.isFreeSpace(randomX, randomY));
 
-
-            // Creates a new destination and adds it to the list
+            //Creates a new Destination to add to Stops
             Destination adding = new Destination(randomX, randomY, String.valueOf(stop));
             this.stops.add(adding);
 
-            // Changes the stop name A, B, C, D
+            //interates the stops name through A, B, C, D
             stop = (char) (stop + 1);
         }
-    }
+    }//End of Destination Factory
 
-        //Racer Factory
+
+    //Adding Competitors on the board
     private void addCompetitors(int dimension, int numOfCars){
 
+        //creates randomizer
         Random randomizer = new Random();
+
         for(int i = 0; i < numOfCars; i++){
 
-                // creates random Coordinates on the gameboard.
-                //outside of loop to add to Car()
+            //initiates Random X,Y locations
             int randomX;
             int randomY;
 
-                    //Checks to see if spawn point is taken
-            do {
-                    randomX = randomizer.nextInt(dimension);
-                    randomY = randomizer.nextInt(dimension) ;
-            } while (!this.isFreeSpace(randomX, randomY));
+            do{
+                //Randomizers X, and Y until the space is valid
+                randomX = randomizer.nextInt(dimension);
+                randomY = randomizer.nextInt(dimension);
+            } while(!this.isFreeSpace(randomX, randomY));
 
-                //adding competitor
-            Car next = new Car(randomX, randomY, String.valueOf(i + 1));
-            this.setDestinations(next);
-            this.racers.add(next);
+            //Adding a New racer in an open space
+            Car adding = new Car(randomX, randomY, String.valueOf(i + 1));
+            //Randomizers the order of locations the Racers visit
+            this.setDestinations(adding);
+            this.racers.add(adding);
+
         }
-    }
-        //used in method above
+
+    }//End of Racer Factory
+
+
+    //Used to randomize particular racers check point order
     private void setDestinations(Car setting){
-        //Creates a new list of locations without altering the original
-        List<Destination> shuffledList = new ArrayList<>(this.stops);
+        //Creates a List without alternating the original list
+        List <Destination> shuffledList = new ArrayList<>(this.stops);
+        //Shuffles obj. in new list
         Collections.shuffle(shuffledList);
+        //Adds new List to specific racer
         setting.setDestination(shuffledList);
-    }
+    }//End of Shuffling racers objectives
 
-    //-------------Getters--------------------------------------------------
 
+
+
+//---------------------------Getters-------------------------------------------------------
+
+    //Checks to see if the race is over
     public boolean getFinished(){
-        return this.pacer.getFinished();
+        boolean isDone = true;
+        for(Car next: this.racers){
+            isDone = isDone && next.getFinished();
+        }
+        return isDone;
     }
 
+    //Give the ability to get List of Competitors
     public List<Car> getRacers(){
         return this.racers;
     }
 
+    //Removes last turns Racer
     public void removeRacer(Car remove){
-
         if(this.racers.contains(remove)){
             this.racers.remove(remove);
             this.board.remove(remove);
         }
     }
+    //Adds the next turns racer locations
     public void setRacers(List<Car> nextSpots){
-        this.racers = nextSpots;
+        this.racers.addAll(nextSpots);
         this.board.addAll(nextSpots);
     }
 
+    //Exports all the GamePieces
     public List<GamePiece> getBoard(){
         return this.board;
     }
 
+    //Exports cars to iterate their results onto individual labels
+    public String[] getResults(){
 
-        //Array of Ranking order to be iterated onto JLables
-    public Car[] getResults(){
-
-
-            //Sorts from smallest to largest
+        //Components needed to help sort
+        //from smallest to largests
         int x = 0;
         int n = this.racers.size();
         boolean swapped;
 
-            //sets up an array for easier handling and less memory
-        Car[] arr = new Car[this.racers.size()];
-            //iterates the List into an array
+        //Sets up an array for easier sorting than a List
+        Car[] sorting = new Car[n];
+        //iterates the List into an Array
         for(Car next : this.racers){
-            arr[x] = next;
+            sorting[x] = next;
             x++;
         }
-            //do loop to swap lowest into array[0]
-        do {
+
+        do{
+            //If swapped stays false it exits the loop
             swapped = false;
-            for (int i = 1; i < n; i++) {
-                if (arr[i - 1].getTurns() > arr[i].getTurns()) {
-                    // swap arr[i-1] and arr[i]
-                    Car temp = arr[i - 1];
-                    arr[i - 1] = arr[i];
-                    arr[i] = temp;
+            for(int i = 1; i < n; i++){
+
+                if(sorting[i-1].getTimed() > sorting[i].getTimed()){
+                    //Swaps sorting[i-1] and sorting[i]
+                    //if sorting[i] finished first
+                    Car temp = sorting[i-1];
+                    sorting[i-1] = sorting[i];
+                    sorting[i] = temp;
+                    //Keeps the Loop going
                     swapped = true;
                 }
             }
-        } while (swapped);
+        } while(swapped);
 
-        return arr;
+        //Creates return string
+        String[] reply = new String[n];
+        for(int i = 0; i < n; i++){
+            reply[i] = sorting[i].getResults();
+        }
+
+        return reply;
     }
 
-
-    //-------------Turn Taking Methods--------------------------------------------------
-
-        //toString() method to complete class
+    //toString() method to complete class
     @Override
-    public String toString(){
-        String reply = "This class sets up the gameboard and acts as a switchboard to all the different components";
+    public String toString() {
+        String reply = "This class sets up the gameboard and acts" +
+                "as a holder to all the backend components";
         return reply;
     }
 }
